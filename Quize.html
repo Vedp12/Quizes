@@ -4,33 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="Quizelogo.jpg" type="image/x-icon" />
-    <title>Quize</title>
-    <link rel="stylesheet" href="Quize.css" />
-    <style></style>
+    <title>Quiz</title>
   </head>
-  <body style="background-color: rgb(89, 89, 250)">
+  <body>
     <div class="container">
-      <h1>Quiz</h1>
-
-      <form action="Question" id="createQuizForm">
+      <h1>Create a Quiz</h1>
+      <form id="createQuizForm">
         <input
           type="text"
-          id="Quize_title"
+          id="quizTitle"
+          placeholder="Quiz Title"
           required
-          style="height: 30px; width: 40%; border-radius: 8px"
-          aria-required="true"
+          style="height: 30px; width: 60%; border-radius: 8px"
         />
-        <div id="Quiz_container"></div>
+        <div id="quizContainer"></div>
         <br />
         <button type="button" id="addQuestionBtn">Add Question</button>
         <button type="submit">Create Quiz</button>
       </form>
-
-      <h2>Take a Quize</h2>
+      <h1 id="quizSubmitTitle"></h1>
       <div id="takeQuizContainer"></div>
-      <button id="submitQuizBtn" style="display: none">Submit Quize</button>
+      <button id="submitQuizBtn" style="display: none">Submit Quiz</button>
       <div id="quizResult"></div>
     </div>
+    <script src="Quize.js"></script>
   </body>
-  <script src="quize.js"></script>
 </html>

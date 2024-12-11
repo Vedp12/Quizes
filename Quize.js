@@ -1,44 +1,107 @@
-//! Declare a variable
-const Quize_form = document.querySelector("#createQuizForm");
-const Quize_Container = document.querySelector("#Quiz_container");
-const Quize_Addquestion = document.querySelector("#addQuestionBtn");
-// after Process
-const Quize_takeQuize = document.querySelector("#takeQuizContainer");
-const Quize_submitbtn = document.querySelector("#submitQuizBtn");
-const Quize_Result = document.querySelector("#quizResult");
+// Declare variables
+const quizTitle = document.querySelector("#quizTitle");
+const quizForm = document.querySelector("#createQuizForm");
+const quizContainer = document.querySelector("#quizContainer");
+const addQuestionBtn = document.querySelector("#addQuestionBtn");
+const quizSubmitTitle = document.querySelector("#quizSubmitTitle");
+const takeQuizContainer = document.querySelector("#takeQuizContainer");
+const submitQuizBtn = document.querySelector("#submitQuizBtn");
+const quizResult = document.querySelector("#quizResult");
 
-Quize_Addquestion.addEventListener("click", () => {
-  const Questions_box = document.createElement("div");
-  Questions_box.id = "Que_box";
+let quizData = { title: "", questions: [] };
 
-  //? Add Ques
-  const Que_inp = document.createElement("input");
-  Que_inp.placeholder = "Enter your Qouestion ";
-  Que_inp.style.height = "30px";
-  Que_inp.style.width = "40%";
-  Que_inp.style.borderRadius = "8px";
-  Que_inp.style.margin = "12px";
+// Add a new question
+addQuestionBtn.addEventListener("click", () => {
+  const questionBox = document.createElement("div");
 
-  //? Add options For Quize
-  const opt1 = document.createElement("input");
-  const opt2 = document.createElement("input");
-  const opt3 = document.createElement("input");
-  const opt4 = document.createElement("input");
+  // Add question input
+  const questionInput = document.createElement("input");
+  questionInput.placeholder = "Enter your question";
+  questionInput.required = true;
 
-  opt1.className = "Ques_opt";
-  opt2.className = "Ques_opt";
-  opt3.className = "Ques_opt";
-  opt4.className = "Ques_opt";
+  // Add options inputs
+  const options = Array.from({ length: 4 }, (_, index) => {
+    const optionInput = document.createElement("input");
+    optionInput.className = "questionOption";
+    optionInput.placeholder = `${index + 1}. Option`;
+    return optionInput;
+  });
 
-  const style = document.querySelector("style");
-  style.innerHTML= `
-  .Ques_opt{
+  // Add correct answer input
+  const correctAnswerInput = document.createElement("input");
+  correctAnswerInput.type = "text";
+  correctAnswerInput.placeholder =
+    "Enter correct answer (must match an option)";
+  correctAnswerInput.required = true;
+
+  // Append all inputs to the question box
+  questionBox.appendChild(questionInput);
+  options.forEach((option) => questionBox.appendChild(option));
+  questionBox.appendChild(correctAnswerInput);
+
+  quizContainer.appendChild(questionBox);
+});
+
+// Handle quiz form submission
+quizForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  quizData.title = quizTitle.value;
+  quizData.questions = Array.from(quizContainer.children).map((questionBox) => {
+    const questionInput = questionBox.querySelector("input:first-child");
+    const optionInputs = questionBox.querySelectorAll(".questionOption");
+    const correctAnswerInput = questionBox.querySelector("input:last-child");
+
+    return {
+      question: questionInput.value,
+      options: Array.from(optionInputs).map((option) => option.value),
+      correctAnswer: correctAnswerInput.value,
+    };
+  });
+
+  renderQuiz();
+});
+
+// Render the quiz for taking
+const renderQuiz = () => {
+  takeQuizContainer.innerHTML = `<h2>${quizData.title}</h2>`;
+
+  quizData.questions.forEach((q, index) => {
+    const questionDiv = document.createElement("div");
+    questionDiv.textContent = `${index + 1}. ${q.question}`;
+
+    q.options.forEach((option) => {
+      const optionDiv = document.createElement("div");
+      optionDiv.innerHTML = `
+        <label>
+          <input type="radio" name="question-${index}" value="${option}" />
+          ${option}
+        </label>`;
+      questionDiv.appendChild(optionDiv);
+    });
+
+    takeQuizContainer.appendChild(questionDiv);
+  });
+
+  submitQuizBtn.style.display = "block";
+};
+
+// Handle quiz submission
+submitQuizBtn.addEventListener("click", () => {
+  const selectedAnswers = Array.from(
+    takeQuizContainer.querySelectorAll("input[type='radio']:checked")
+  );
+
+  let score = 0;
+
+  quizData.questions.forEach((q, index) => {
+    if (
+      selectedAnswers[index] &&
+      selectedAnswers[index].value === q.correctAnswer
+    ) {
+      score++;
     }
-  `
-  //? Add correct  Ans
-  //   const Que_Correct_ans = document.createElement("input");
-  //   Que_Correct_ans.placeholder
+  });
 
-  Questions_box.appendChild(Que_inp);
-  Quize_Container.appendChild(Questions_box);
+  quizResult.innerHTML = `Your score is ${score} out of ${quizData.questions.length}`;
 });
